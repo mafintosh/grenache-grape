@@ -209,11 +209,13 @@ describe('service announce', () => {
     createGrapes(100, (grapes, stop) => {
       const [g0, g1, g2, g3] = grapes
       const one = startAnnouncing(g0, 'A', 3000)
+      const then = Date.now()
       let two
 
       g1.announce('B', 2000, (err) => {
         assert.equal(err, null)
-        setTimeout(run, 100)
+        // sometimes announce runs slow on ci, so we tweak the timeout here
+        setTimeout(run, Date.now() - then < 50 ? 100 : 50)
         let ticks = 0
 
         function run () {

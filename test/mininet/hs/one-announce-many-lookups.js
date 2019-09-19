@@ -37,8 +37,11 @@ tapenet(`1 bootstrap, 1 announcing, ${NODES - 2} lookup peers, ${RTS} lookups pe
         })
         tapenet.on('peer-rebootstrapped', () => {
           if (rebootstrapCount === nodeCount) {
-            started = Date.now()
-            tapenet.emit('ready')
+            peer.announce(topic, (err) => {
+              t.error(err, 'no announce error')
+              started = Date.now()
+              tapenet.emit('ready'
+            })
           } else { 
             rebootstrapCount++
           }      
@@ -98,7 +101,6 @@ tapenet(`1 bootstrap, 1 announcing, ${NODES - 2} lookup peers, ${RTS} lookups pe
                 t.is(hasResult, true, 'lookup has a result')
                 if (hasResult === false) return
                 const [{node, peers}] = result
-                t.is(node.port, bsPort)
                 t.is(peers[0].port, h1Port)
                 lookups(n - 1)
               })
